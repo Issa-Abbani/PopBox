@@ -49,8 +49,7 @@ export default function HomePage() {
               <span className="wrap-break-word">{featuredMovie.genres.join(" / ")}</span>
             </div>
             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
-              <Button className="rounded-full">Watch now</Button>
-              <Button variant="secondary" className="rounded-full border border-white/20 bg-white/10 text-white hover:bg-white/20">
+              <Button variant="secondary" className="rounded-full border cursor-pointer border-white/20 bg-primary/80 text-white hover:bg-white/20">
                 Add to watchlist
               </Button>
             </div>

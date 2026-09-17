@@ -7,7 +7,7 @@ export default function WatchlistPage() {
   return (
     <CollectionPage
       title="Watchlist"
-      subtitle="Saved for later"
+      subtitle="View every single planned piece of entertainment you plan on consuming, alone or with friends!"
       movies={watchlistMovies}
       emptyState={
         <div className="flex min-h-105 items-center justify-center rounded-[30px] border border-dashed border-border bg-card p-8 text-center">

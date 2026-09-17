@@ -7,7 +7,7 @@ export default function FavoritesPage() {
   return (
     <CollectionPage
       title="Favorites"
-      subtitle="Your top picks"
+      subtitle="Your most memorable picks. This space is reserved for the special pieces of media that resonate the most with you."
       movies={favoriteMovies}
       emptyState={
         <div className="flex min-h-105 items-center justify-center rounded-[30px] border border-dashed border-border bg-card p-8 text-center">

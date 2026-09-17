@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Film, Heart, House, ListVideo, Sparkles, Tv } from "lucide-react";
+import { Film, Heart, House, ListVideo, Tv } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,7 @@ const items = [
 
 export function Sidebar() {
   return (
-    <aside className="w-full border-b border-border bg-background lg:w-72 lg:border-b-0 lg:border-r">
+    <aside className="w-full h-full border-b border-border bg-background lg:w-72 lg:border-b-0 lg:border-r lg:fixed z-0">
       <div className="flex h-full flex-col gap-4 p-3 sm:p-4 lg:gap-8 lg:p-5">
         <div className="rounded-2xl border border-border bg-linear-to-br from-card to-muted p-3 lg:p-4">
           <div className="mb-3 flex items-center justify-between">
@@ -48,22 +48,6 @@ export function Sidebar() {
           ))}
         </nav>
 
-        <div className="mt-auto rounded-2xl border border-border bg-card p-3 lg:p-4">
-          <div className="mb-3 flex items-center gap-2 text-foreground">
-            <Sparkles className="h-4 w-4 text-accent" />
-            <span className="text-sm font-medium">This week</span>
-          </div>
-          <div className="space-y-3 text-sm text-muted-foreground">
-            <div className="flex items-center justify-between gap-3">
-              <span className="truncate">New picks</span>
-              <span className="font-medium text-foreground">12</span>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <span className="truncate">Upcoming</span>
-              <span className="font-medium text-foreground">4</span>
-            </div>
-          </div>
-        </div>
       </div>
     </aside>
   );

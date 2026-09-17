@@ -68,6 +68,9 @@ body {
   background-image:
     radial-gradient(circle at top left, rgba(124, 58, 237, 0.16), transparent 28%),
     radial-gradient(circle at 90% 18%, rgba(245, 158, 11, 0.12), transparent 22%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 * {

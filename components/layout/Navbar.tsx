@@ -2,25 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Menu, Search, Sparkles } from "lucide-react";
+import { Menu, Sparkles } from "lucide-react";
 
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Button } from "@/components/ui/button";
 
-const navItems = [
-  { label: "Home", href: "/home" },
-  { label: "Watchlist", href: "/watchlist" },
-  { label: "Favorites", href: "/favorites" },
-  { label: "Watched", href: "/watched" },
-];
+// const navItems = [
+//   { label: "Home", href: "/home" },
+//   { label: "Watchlist", href: "/watchlist" },
+//   { label: "Favorites", href: "/favorites" },
+//   { label: "Watched", href: "/watched" },
+// ];
 
 export function Navbar() {
   const pathname = usePathname();
   const isAuthenticatedRoute = pathname.startsWith("/home") || pathname.startsWith("/watchlist") || pathname.startsWith("/favorites") || pathname.startsWith("/watched") || pathname.startsWith("/movies");
-  const isAuthRoute = pathname.startsWith("/sign") || pathname.startsWith("/reset") || pathname === "/about";
+  const isAuthRoute = pathname.startsWith("/sign") || pathname.startsWith("/reset") || pathname === "/";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-black/70 backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-accent-foreground/70 backdrop-blur-2xl">
       <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-2 px-3 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <button
@@ -36,13 +36,13 @@ export function Navbar() {
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <div className="min-w-0">
-              <div className="truncate text-base font-semibold tracking-[-0.06em] text-foreground sm:text-lg">PopBox</div>
+              <div className="truncate text-base font-semibold tracking-[-0.06em] text-white sm:text-xl">PopBox</div>
             </div>
           </Link>
         </div>
 
         <nav className="hidden items-center gap-2 md:flex">
-          {(isAuthenticatedRoute ? navItems : [{ label: "About", href: "/about" }, { label: "Discover", href: "/home" }]).map((item) => (
+          {/* {(isAuthenticatedRoute ? navItems : [{ label: "About", href: "/about" }, { label: "Discover", href: "/home" }]).map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -55,28 +55,10 @@ export function Navbar() {
             >
               {item.label}
             </Link>
-          ))}
+          ))} */}
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {!isAuthRoute && (
-            <button
-              type="button"
-              className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm sm:inline-flex"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-          )}
-          {!isAuthRoute && (
-            <button
-              type="button"
-              className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm sm:inline-flex"
-              aria-label="Notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </button>
-          )}
 
           <ThemeToggle />
 
@@ -91,13 +73,12 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="hidden items-center gap-3 rounded-full border border-border bg-card px-2 py-1.5 shadow-sm sm:flex">
+              <div className="items-center md:gap-3 rounded-full md:border md:border-border bg-transparent md:bg-card md:px-2 md:py-1.5 shadow-sm flex cursor-pointer">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-primary to-accent text-sm font-semibold text-white">
-                  AS
+                  I
                 </div>
                 <div className="pr-1 text-left">
-                  <div className="text-sm font-medium text-foreground">Alicia Stone</div>
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Member</div>
+                  <div className="text-sm font-medium text-foreground hidden md:block">Issa Abbani</div>
                 </div>
               </div>
             </div>

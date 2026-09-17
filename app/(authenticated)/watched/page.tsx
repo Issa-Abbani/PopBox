@@ -7,7 +7,7 @@ export default function WatchedPage() {
   return (
     <CollectionPage
       title="Watched"
-      subtitle="Your history"
+      subtitle="Your watch history all in one place. Take a look at your pop culture journey."
       movies={watchedMovies}
       emptyState={
         <div className="flex min-h-105 items-center justify-center rounded-[30px] border border-dashed border-border bg-card p-8 text-center">
