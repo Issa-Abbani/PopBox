@@ -85,8 +85,8 @@ const reveal = {
 
 export default function RootPage() {
   return (
-    <main className="min-h-screen px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 sm:gap-8">
+    <main className="min-h-screen px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-15">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 sm:gap-20 lg:gap-35">
         <motion.section
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
