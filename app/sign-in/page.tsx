@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Loader from "@/components/layout/Loader";
 import { hasEmptyValue } from "@/lib/helpers/isEmpty";
+import { signInSchema } from "@/lib/auth/validations/auth";
+import { signIn } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,6 +20,7 @@ export default function SignInPage() {
 
     setError("");
     setIsLoading(true);
+
     try {
       const formData = new FormData(e.currentTarget);
 
@@ -30,29 +34,26 @@ export default function SignInPage() {
         return;
       }
 
-      // Send data to API
+      const validation = signInSchema.safeParse(data);
 
-      const res = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      if (!validation.success) {
+        setError("Invalid email or password format");
+        return;
+      }
+
+      const { error } = await signIn.email({
+        email: validation.data.email,
+        password: validation.data.password,
       });
 
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(`Error: ${result.error}`);
+      if (error) {
+        setError(error.message || "Error: Please try again");
+        return;
       }
 
-      //Later you have to use router.push("/home") since this is a client component
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Something went wrong");
-      }
+      router.push("/home");
+    } catch {
+      setError("Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -164,7 +165,7 @@ export default function SignInPage() {
           >
             <Button
               type="submit"
-              className={`w-full rounded-full text-primary-foreground ${isLoading ? "bg-disabled" : "bg-primary"}`}
+              className={`w-full rounded-full text-primary-foreground ${isLoading ? "bg-disabled" : "bg-primary cursor-pointer"}`}
               disabled={isLoading}
             >
               {isLoading ? <Loader /> : "Sign In"}
@@ -176,7 +177,7 @@ export default function SignInPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.35 }}
-          className="mt-6 text-center text-sm text-muted-foreground"
+          className={`mt-6 text-center text-sm text-muted-foreground ${isLoading ? "hidden" : ""}`}
         >
           Don&apos;t have an account?{" "}
           <Link href="/sign-up" className="font-medium text-primary">

@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Loader from "@/components/layout/Loader";
 import { hasEmptyValue } from "@/lib/helpers/isEmpty";
+import { useRouter } from "next/navigation";
+import { signUp } from "@/lib/auth/auth-client";
+import { signUpSchema } from "@/lib/auth/validations/auth";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,6 +21,7 @@ export default function SignUpPage() {
 
     setError("");
     setIsLoading(true);
+
     try {
       const formData = new FormData(e.currentTarget);
 
@@ -39,23 +44,25 @@ export default function SignUpPage() {
         return;
       }
 
-      // Send data to API
+      const validation = signUpSchema.safeParse(data);
 
-      const res = await fetch("/api/auth/sign-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(`Error: ${result.error}`);
+      if (!validation.success) {
+        setError("Invalid sign-up information");
+        return;
       }
 
-      //Later you have to use router.push("/home") since this is a client component
+      const { error } = await signUp.email({
+        name: validation.data.name,
+        email: validation.data.email,
+        password: validation.data.password,
+      });
+
+      if (error) {
+        setError(error.message || "Error: Please try again");
+        return;
+      }
+
+      router.push("/home");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -66,7 +73,6 @@ export default function SignUpPage() {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-10">
       <motion.div
@@ -203,7 +209,7 @@ export default function SignUpPage() {
           >
             <Button
               type="submit"
-              className={`w-full rounded-full text-primary-foreground ${isLoading ? "bg-disabled" : "bg-primary"}`}
+              className={`w-full rounded-full text-primary-foreground ${isLoading ? "bg-disabled" : "bg-primary cursor-pointer"}`}
               disabled={isLoading}
             >
               {isLoading ? <Loader /> : "Sign Up"}

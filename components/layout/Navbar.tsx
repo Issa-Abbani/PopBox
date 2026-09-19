@@ -65,10 +65,10 @@ export function Navbar() {
           {isAuthRoute ? (
             <div className="flex items-center gap-1.5 sm:gap-2">
               <Link href="/sign-in">
-                <Button variant="ghost" className="h-9 rounded-full px-3 text-xs sm:text-sm">Sign in</Button>
+                <Button variant="ghost" className="h-9 rounded-full px-3 text-white text-xs sm:text-sm">Sign in</Button>
               </Link>
               <Link href="/sign-up">
-                <Button className="h-9 rounded-full px-3 text-xs sm:text-sm">Sign up</Button>
+                <Button className="h-9 rounded-full px-3 text-white text-xs sm:text-sm">Sign up</Button>
               </Link>
             </div>
           ) : (
