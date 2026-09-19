@@ -25,7 +25,7 @@ export function Navbar() {
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <button
             type="button"
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm lg:hidden"
+            className={` h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm lg:hidden ${isAuthRoute ? ("hidden") : ("inline-flex")}`}
             aria-label="Open menu"
           >
             <Menu className="h-4 w-4" />

@@ -6,9 +6,10 @@ import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Loader from "@/components/layout/Loader";
+import { hasEmptyValue } from "@/lib/helpers/isEmpty";
 
 export default function SignUpPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,14 +21,21 @@ export default function SignUpPage() {
       const formData = new FormData(e.currentTarget);
 
       const data = {
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-        confirmPassword: formData.get("confirmPassword"),
+        name: formData.get("name")?.toString() ?? "",
+        email: formData.get("email")?.toString() ?? "",
+        password: formData.get("password")?.toString() ?? "",
+        confirmPassword: formData.get("confirmPassword")?.toString() ?? "",
       };
 
-      if(data.password !== data.confirmPassword){
-        setError("Error: Your Password is different from the Confirm Password Input");
+      if (data.password !== data.confirmPassword) {
+        setError(
+          "Error: Your Password is different from the Confirm Password Input",
+        );
+        return;
+      }
+
+      if (hasEmptyValue(data)) {
+        setError("Error: You cannot have any empty fields");
         return;
       }
 
@@ -88,16 +96,18 @@ export default function SignUpPage() {
           className="space-y-5"
           onSubmit={(e) => handleSubmit(e)}
         >
-          { error.length > 0 && <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.35 }}
-            className="mb-7"
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-error">
-              {error}
-            </p>
-          </motion.div>}
+          {error.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.35 }}
+              className="mb-7"
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-error">
+                {error}
+              </p>
+            </motion.div>
+          )}
           <motion.div
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
@@ -193,7 +203,7 @@ export default function SignUpPage() {
           >
             <Button
               type="submit"
-              className={`w-full rounded-full text-primary-foreground ${isLoading ? "bg-disabled": "bg-primary"}`}
+              className={`w-full rounded-full text-primary-foreground ${isLoading ? "bg-disabled" : "bg-primary"}`}
               disabled={isLoading}
             >
               {isLoading ? <Loader /> : "Sign Up"}

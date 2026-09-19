@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
     // Registration logic goes here
 
-    //1st step is to check if there is an existing user
+    //Check if there is an existing user
     const isExistingUser = await pool.query(
       "SELECT email FROM users WHERE email = $1",
       [email],
@@ -46,58 +46,67 @@ export async function POST(request: Request) {
       return Response.json({ error: "User Already Exists" }, { status: 409 });
     }
 
-    //2nd step is to hash the password
-    const hash = await bcrypt.hash(password, 10); //best cost factor for me
+    // Hash password before the write transaction begins.
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    //3rd step is to insert the user into the users table
-    const userResult = await pool.query(
-      "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
-      [name, email, hash],
-    );
+    const client = await pool.connect();
 
-    const userId = userResult.rows[0].id;
+    try {
+      await client.query("BEGIN");
 
-    //4th step is generating JWT access and refresh tokens
-    const accessToken = jwt.sign({ userId }, process.env.JWT_ACCESS_SECRET!, {
-      expiresIn: "15m",
-    });
+      const userResult = await client.query(
+        "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
+        [name, email, passwordHash],
+      );
 
-    const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
-      expiresIn: "7d",
-    });
+      const userId = userResult.rows[0].id;
 
-    //5th step is to hash the refresh token and store it in my db
+      const accessToken = jwt.sign({ userId }, process.env.JWT_ACCESS_SECRET!, {
+        expiresIn: "15m",
+      });
 
-    const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+      const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
+        expiresIn: "7d",
+      });
 
-    await pool.query(
-      `INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES ($1, $2, NOW() + INTERVAL '7 days')`,
-      [userId, refreshTokenHash],
-    );
+      const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
 
-    //6th step, time to set cookies
-    const cookieStore = await cookies();
+      await client.query(
+        `INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES ($1, $2, NOW() + INTERVAL '7 days')`,
+        [userId, refreshTokenHash],
+      );
 
-    cookieStore.set("accToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 15, //
-      path: "/",
-    });
+      await client.query("COMMIT");
 
-    cookieStore.set("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-    });
+      const cookieStore = await cookies();
 
-    return Response.json(
-      { message: "Registration successful" },
-      { status: 201 },
-    );
+      cookieStore.set("accToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 15,
+        path: "/",
+      });
+
+      cookieStore.set("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
+
+      return Response.json(
+        { message: "Registration successful" },
+        { status: 201 },
+      );
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+
   } catch {
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
