@@ -10,10 +10,12 @@ import {
   Heart,
   ListTodo,
   Play,
-  Sparkles,
+  Film,
   Star,
   Tickets,
 } from "lucide-react";
+import { useSession } from "@/lib/auth/auth-client";
+import ButtonSkeleton from "@/components/ui/skeletons/ButtonSkeleton";
 
 const points = [
   {
@@ -84,6 +86,7 @@ const reveal = {
 };
 
 export default function RootPage() {
+  const { data: session, isPending } = useSession();
   return (
     <main className="min-h-screen px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-15">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 sm:gap-20 lg:gap-35">
@@ -95,27 +98,45 @@ export default function RootPage() {
         >
           <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
             <div className="flex flex-col justify-center">
-
               <h1 className="mt-5 max-w-xl text-4xl font-semibold tracking-[-0.08em] text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
                 Your next favorite movie starts here.
               </h1>
 
               <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-                A cinematic destination for discovering the right film, organizing what matters,
-                and making every movie night feel curated rather than chaotic.
+                A cinematic destination for discovering the right film,
+                organizing what matters, and making every movie night feel
+                curated rather than chaotic.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Link href="/sign-in">
-                  <Button variant="secondary" className="w-full rounded-full px-5 sm:w-auto cursor-pointer">
-                    Sign in
-                  </Button>
-                </Link>
-                <Link href="/sign-up">
-                  <Button className="w-full rounded-full bg-primary px-5 text-white shadow-[0_12px_30px_rgba(124,58,237,0.35)] sm:w-auto">
-                    Get started
-                  </Button>
-                </Link>
+                {isPending ? (
+                  <ButtonSkeleton variant="secondary" />
+                ) : session ? (
+                  <>
+                    <Link href="/home">
+                      <Button className="cursor-pointer w-full rounded-full bg-primary px-5 text-white shadow-[0_12px_30px_rgba(124,58,237,0.35)] sm:w-auto">
+                        To Your Popbox <ArrowRight />
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/sign-in">
+                      <Button
+                        variant="secondary"
+                        className="w-full cursor-pointer rounded-full px-5 sm:w-auto"
+                      >
+                        Sign in
+                      </Button>
+                    </Link>
+
+                    <Link href="/sign-up">
+                      <Button className="cursor-pointer w-full rounded-full bg-primary px-5 text-white shadow-[0_12px_30px_rgba(124,58,237,0.35)] sm:w-auto">
+                        Get started
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 
@@ -125,8 +146,8 @@ export default function RootPage() {
               transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
               className="rounded-[28px] border border-border bg-card-elevated p-3 sm:p-4"
             >
-              <div className="relative overflow-hidden rounded-3xl border border-border bg-linear-to-br from-primary/18 via-card to-accent/12 p-4 sm:p-5 flex justify-center gap-2 items-center lg:text-5xl text-lg font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                <Sparkles className="lg:h-20 lg:w-20 text-primary" />
+              <div className="relative overflow-hidden rounded-3xl border border-border bg-linear-to-br from-primary/18 via-card to-accent/12 p-4 sm:p-5 flex justify-center gap-5 items-center lg:text-5xl text-lg font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                <Film className="lg:h-15 lg:w-15 text-primary" />
                 Popbox
               </div>
             </motion.div>
@@ -139,7 +160,10 @@ export default function RootPage() {
         >
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map(({ value, label }) => (
-              <div key={label} className="rounded-[20px] border border-border bg-muted/60 p-4 text-center">
+              <div
+                key={label}
+                className="rounded-[20px] border border-border bg-muted/60 p-4 text-center"
+              >
                 <p className="text-3xl font-semibold tracking-[-0.06em] text-foreground sm:text-4xl">
                   {value}
                 </p>
@@ -151,7 +175,11 @@ export default function RootPage() {
           </div>
         </motion.section>
 
-        <motion.section id="features" {...reveal} className="rounded-[28px] border border-border bg-card/80 p-5 backdrop-blur-sm sm:p-6 lg:p-8">
+        <motion.section
+          id="features"
+          {...reveal}
+          className="rounded-[28px] border border-border bg-card/80 p-5 backdrop-blur-sm sm:p-6 lg:p-8"
+        >
           <div className="mb-6 flex flex-col gap-2 sm:mb-8">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
               Why PopBox
@@ -185,7 +213,10 @@ export default function RootPage() {
           </div>
         </motion.section>
 
-        <motion.section {...reveal} className="rounded-[28px] border border-border bg-card/80 p-5 sm:p-6 lg:p-8">
+        <motion.section
+          {...reveal}
+          className="rounded-[28px] border border-border bg-card/80 p-5 sm:p-6 lg:p-8"
+        >
           <div className="mb-6 flex flex-col gap-2 sm:mb-8">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
               How it works
@@ -205,17 +236,24 @@ export default function RootPage() {
                 transition={{ duration: 0.5 }}
                 className="rounded-3xl border border-border bg-linear-to-br from-card to-muted/60 p-5"
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">{number}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+                  {number}
+                </p>
                 <h3 className="mt-4 text-2xl font-semibold tracking-tighter text-foreground">
                   {title}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{text}</p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  {text}
+                </p>
               </motion.article>
             ))}
           </div>
         </motion.section>
 
-        <motion.section {...reveal} className="rounded-[1.75rem] border border-border bg-linear-to-br from-primary/10 via-card to-accent/8 p-5 sm:p-6 lg:p-8">
+        <motion.section
+          {...reveal}
+          className="rounded-[1.75rem] border border-border bg-linear-to-br from-primary/10 via-card to-accent/8 p-5 sm:p-6 lg:p-8"
+        >
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
@@ -225,8 +263,9 @@ export default function RootPage() {
                 The right film for every kind of evening.
               </h2>
               <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                From sharp thrillers to warm classics, PopBox helps you move from “what should I watch?”
-                to “this is exactly the right movie for tonight.”
+                From sharp thrillers to warm classics, PopBox helps you move
+                from “what should I watch?” to “this is exactly the right movie
+                for tonight.”
               </p>
             </div>
 
@@ -241,16 +280,25 @@ export default function RootPage() {
                   className="flex items-center gap-3 rounded-[18px] border border-border bg-card p-3"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    {index % 2 === 0 ? <Play className="h-4 w-4 fill-current" /> : <Tickets className="h-4 w-4" />}
+                    {index % 2 === 0 ? (
+                      <Play className="h-4 w-4 fill-current" />
+                    ) : (
+                      <Tickets className="h-4 w-4" />
+                    )}
                   </div>
-                  <span className="text-sm font-medium text-foreground">{mood}</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {mood}
+                  </span>
                 </motion.div>
               ))}
             </div>
           </div>
         </motion.section>
 
-        <motion.section {...reveal} className="rounded-[28px] border border-border bg-card/80 p-5 sm:p-6 lg:p-8">
+        <motion.section
+          {...reveal}
+          className="rounded-[28px] border border-border bg-card/80 p-5 sm:p-6 lg:p-8"
+        >
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div className="space-y-4">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
@@ -260,16 +308,21 @@ export default function RootPage() {
                 Thoughtful tools, quiet luxury, and a better way to watch.
               </h2>
               <p className="text-base leading-7 text-muted-foreground">
-                PopBox is designed for people who love the ritual of discovering a great film, keeping a
-                sharp eye on what they want to watch next, and celebrating the movies that become part of their life.
+                PopBox is designed for people who love the ritual of discovering
+                a great film, keeping a sharp eye on what they want to watch
+                next, and celebrating the movies that become part of their life.
               </p>
             </div>
 
             <div className="rounded-3xl border border-border bg-linear-to-br from-muted to-card p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Tonight&apos;s queue</p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">7 titles</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Tonight&apos;s queue
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold text-foreground">
+                    7 titles
+                  </p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <BookmarkCheck className="h-5 w-5" />
@@ -282,10 +335,15 @@ export default function RootPage() {
                   ["Glass Harbor", "4.7"],
                   ["Midnight Echoes", "4.9"],
                 ].map(([name, score]) => (
-                  <div key={name} className="flex items-center justify-between rounded-2xl border border-border bg-card px-3 py-2.5">
+                  <div
+                    key={name}
+                    className="flex items-center justify-between rounded-2xl border border-border bg-card px-3 py-2.5"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="h-9 w-9 rounded-full bg-linear-to-br from-primary/30 to-accent/50" />
-                      <span className="text-sm font-medium text-foreground">{name}</span>
+                      <span className="text-sm font-medium text-foreground">
+                        {name}
+                      </span>
                     </div>
                     <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                       {score}
@@ -297,14 +355,18 @@ export default function RootPage() {
           </div>
         </motion.section>
 
-        <motion.section {...reveal} className="rounded-[1.75rem] border border-border bg-linear-to-r from-primary/12 via-accent/8 to-transparent p-5 sm:p-6 lg:p-8">
+        <motion.section
+          {...reveal}
+          className="rounded-[1.75rem] border border-border bg-linear-to-r from-primary/12 via-accent/8 to-transparent p-5 sm:p-6 lg:p-8"
+        >
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 Ready when you are
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-[-0.06em] text-foreground sm:text-4xl">
-                Build a movie life that feels personal, elegant, and easy to revisit.
+                Build a movie life that feels personal, elegant, and easy to
+                revisit.
               </h2>
             </div>
             <Link href="/sign-up">
