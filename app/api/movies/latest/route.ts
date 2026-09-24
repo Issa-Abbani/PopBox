@@ -1,18 +1,23 @@
 import { NextResponse } from "next/server";
+
 import { getLatestMoviesHome } from "@/lib/movies/getLatestMovies";
 
 export async function GET() {
-  console.log("Request Received")
-  const response = await getLatestMoviesHome();
+  try {
+    const data = await getLatestMoviesHome();
 
-  if (!response.ok) {
+    if (data.Response === "False") {
+      return NextResponse.json(
+        { error: data.Error ?? "OMDb request failed" },
+        { status: 400 },
+      );
+    }
+
+    return NextResponse.json(data);
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch movies" },
-      { status: response.status }
+      { status: 500 },
     );
   }
-
-  const data = await response.json();
-
-  return NextResponse.json(data);
 }

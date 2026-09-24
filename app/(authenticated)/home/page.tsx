@@ -152,7 +152,7 @@ export default function HomePage() {
                 variant="ghost"
                 className="hidden gap-2 rounded-full md:inline-flex"
               >
-                View all
+                Search
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
@@ -161,7 +161,7 @@ export default function HomePage() {
           </section>
 
           {/*mood board*/}
-          <section className="rounded-[28px] border border-border bg-card p-5 shadow-[0_18px_40px_rgba(15,23,42,0.04)]">
+          {/* <section className="rounded-[28px] border border-border bg-card p-5 shadow-[0_18px_40px_rgba(15,23,42,0.04)]">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -176,7 +176,7 @@ export default function HomePage() {
                 Curated for you
               </div>
             </div>
-          </section>
+          </section> */}
         </>
       )}
     </div>

@@ -3,14 +3,14 @@ import { cacheLife } from "next/cache";
 
 dotenv.config({ path: ".env.local" });
 
-export async function getLatestMoviesHome() {
+export async function getMovieDetails(imdbId: string) {
   "use cache";
 
   cacheLife("hours");
 
-  console.log("🔥 OMDb request:", new Date().toISOString());
+  console.log("🔥 OMDb Details Request:", new Date().toISOString());
 
-  const url = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&s=movie&type=movie&y=${new Date().getFullYear()}`;
+  const url = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&i=${imdbId}&plot=full`;
 
   const response = await fetch(url);
 
