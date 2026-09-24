@@ -1,16 +1,14 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ArrowRight, Flame, Sparkles } from "lucide-react";
+import { ArrowRight, Flame } from "lucide-react";
 
 import { MediaImage } from "@/components/ui/media-image";
-import { SearchBar } from "@/components/search/SearchBar";
-import { FilterMenu } from "@/components/filters/FilterMenu";
-import { SortMenu } from "@/components/filters/SortMenu";
 import { MovieGrid } from "@/components/movies/MovieGrid";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type {
   OmdbSearchResult,
   OmdbSearchResponse,
@@ -21,6 +19,7 @@ export default function HomePage() {
   const [movies, setMovies] = useState<OmdbSearchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function getMovies() {
@@ -136,7 +135,7 @@ export default function HomePage() {
 
           {/*latest movies*/}
           <section className="space-y-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            {/* <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="w-full lg:max-w-xl">
                 <SearchBar />
               </div>
@@ -144,13 +143,15 @@ export default function HomePage() {
                 <FilterMenu />
                 <SortMenu />
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-between">
               <SectionHeading eyebrow="Discover" title="Most Popular" />
+
               <Button
                 variant="ghost"
-                className="hidden gap-2 rounded-full md:inline-flex"
+                className="hidden gap-2 rounded-full md:inline-flex cursor-pointer"
+                onClick={()=> router.push("/search")}
               >
                 Search
                 <ArrowRight className="h-4 w-4" />

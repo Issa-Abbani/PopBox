@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Film, Heart, House, ListVideo, Tv } from "lucide-react";
+import { Film, Heart, House, ListVideo, Tv, SearchIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/home", label: "Home", icon: House },
+  { href: "/search", label: "Search", icon: SearchIcon },
   { href: "/watchlist", label: "Watchlist", icon: ListVideo },
   { href: "/favorites", label: "Favorites", icon: Heart },
   { href: "/watched", label: "Watched", icon: Tv },
