@@ -5,10 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "m.media-amazon.com",
       },
     ],
   },
+  cacheComponents: true
 };
 
 export default nextConfig;
