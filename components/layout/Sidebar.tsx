@@ -1,15 +1,6 @@
-import Link from "next/link";
-import { Film, Heart, House, ListVideo, Tv, SearchIcon } from "lucide-react";
+import { Film} from "lucide-react";
+import { SidebarButton } from "./SidebarButton";
 
-import { cn } from "@/lib/utils";
-
-const items = [
-  { href: "/home", label: "Home", icon: House },
-  { href: "/search", label: "Search", icon: SearchIcon },
-  { href: "/watchlist", label: "Watchlist", icon: ListVideo },
-  { href: "/favorites", label: "Favorites", icon: Heart },
-  { href: "/watched", label: "Watched", icon: Tv },
-];
 
 export function Sidebar() {
   return (
@@ -31,22 +22,10 @@ export function Sidebar() {
         </div>
 
         <nav className="grid grid-cols-2 gap-2 lg:grid-cols-1 lg:space-y-2">
-          {items.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all",
-                "text-muted-foreground hover:bg-muted hover:text-foreground",
-                href === "/home" && "bg-muted text-foreground shadow-inner shadow-white/5",
-              )}
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground group-hover:bg-card lg:h-9 lg:w-9">
-                <Icon className="h-4 w-4" />
-              </span>
-              <span className="truncate">{label}</span>
-            </Link>
-          ))}
+          {/* {items.map(({ href, label, icon: Icon }) => (
+            <SidebarButton key={href} href={href} label={label} Icon={Icon}/>
+          ))} */}
+          <SidebarButton/>
         </nav>
 
       </div>

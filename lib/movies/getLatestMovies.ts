@@ -10,7 +10,7 @@ export async function getLatestMoviesHome() {
 
   console.log("🔥 OMDb request:", new Date().toISOString());
 
-  const url = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&s=movie&type=movie&y=${new Date().getFullYear()}`;
+  const url = `https://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&s=movie`;
 
   const response = await fetch(url);
 
