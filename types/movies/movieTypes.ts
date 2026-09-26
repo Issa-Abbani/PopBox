@@ -6,12 +6,22 @@ export interface OmdbSearchResult {
   Poster: string;
 }
 
+export interface movieInDB {
+  title: string;
+  year: string;
+  imdbID: string;
+  type: "movie" | "series" | "episode";
+  poster_url: string;
+  created_at: Date
+}
+
 export interface OmdbSearchResponse {
   Search?: OmdbSearchResult[];
   totalResults?: string;
   Response: "True" | "False";
   Error?: string;
 }
+
 
 export interface OmdbMovieDetails {
   Title: string;

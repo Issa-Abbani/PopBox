@@ -7,13 +7,30 @@ import { Heart, Plus, CheckCircle2 } from "lucide-react";
 
 import type { OmdbSearchResult } from "@/types/movies/movieTypes";
 
-export function MovieCard({ movie }: { movie: OmdbSearchResult }) {
+export function MovieCard({
+  movie,
+  onFavorite,
+}: {
+  movie: OmdbSearchResult;
+  onFavorite: (movie: OmdbSearchResult) => Promise<void>;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
+      className="relative"
     >
+      <button
+        type="button"
+        aria-label={`Toggle favorite for ${movie.Title}`}
+        className="flex z-30 absolute bottom-5 right-5 h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-red-500/30 hover:text-primary cursor-pointer"
+        onClick={() => onFavorite(movie)}
+      >
+        <Heart
+          className={movie ? "h-4 w-4 fill-red-500 text-red-500" : "h-4 w-4"}
+        />
+      </button>
       <Link
         href={`/movies/${movie.imdbID}`}
         className="group block overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_18px_45px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_26px_68px_rgba(124,58,237,0.14)]"
@@ -46,17 +63,6 @@ export function MovieCard({ movie }: { movie: OmdbSearchResult }) {
                 </h3>
                 <p className="text-sm text-muted-foreground">{movie.Year}</p>
               </div>
-              <button
-                type="button"
-                aria-label={`Toggle favorite for ${movie.Title}`}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
-              >
-                <Heart
-                  className={
-                    movie ? "h-4 w-4 fill-red-500 text-red-500" : "h-4 w-4"
-                  }
-                />
-              </button>
             </div>
 
             <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground sm:text-xs">

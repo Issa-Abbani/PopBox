@@ -5,6 +5,9 @@ import { getLatestMoviesHome } from "@/lib/movies/getLatestMovies";
 export async function GET() {
   try {
     const data = await getLatestMoviesHome();
+    // const likes = fetch user likes from DB
+    //movie = {...movie, is_Liked = true}
+    //if(movie.is_Liked) (undefined)
 
     if (data.Response === "False") {
       return NextResponse.json(
@@ -21,3 +24,7 @@ export async function GET() {
     );
   }
 }
+
+/*
+return NextResponse.json({data, likes})
+*/

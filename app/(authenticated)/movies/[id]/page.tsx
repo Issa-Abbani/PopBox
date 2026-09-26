@@ -69,6 +69,8 @@ async function MovieDetailsContent({
   const countryValue = formatOmdbValue(movie.Country);
   const boxOfficeValue = formatOmdbValue(movie.BoxOffice);
 
+  console.log(movie);
+
   return (
     <div className="space-y-8 p-4 sm:p-6 lg:p-8">
       <Suspense fallback={<Loader />}>
