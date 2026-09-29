@@ -38,7 +38,11 @@ export default function MovieDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  return <MovieDetailsContent params={params} />;
+  return (
+    <Suspense fallback={<Loader/>}>
+      <MovieDetailsContent params={params} />
+    </Suspense>
+  );
 }
 
 async function MovieDetailsContent({
@@ -68,8 +72,6 @@ async function MovieDetailsContent({
   const languageValue = formatOmdbValue(movie.Language);
   const countryValue = formatOmdbValue(movie.Country);
   const boxOfficeValue = formatOmdbValue(movie.BoxOffice);
-
-  console.log(movie);
 
   return (
     <div className="space-y-8 p-4 sm:p-6 lg:p-8">

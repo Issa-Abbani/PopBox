@@ -14,6 +14,10 @@ const recentSearches = [
 ];
 
 async function SearchResults({ query }: { query: string }) {
+  if (!query.trim()) {
+    return <p>Search for a movie.</p>;
+  }
+
   const movies = await searchMovies(query);
 
   if (movies.length === 0) {
