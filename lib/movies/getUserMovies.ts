@@ -1,5 +1,6 @@
 import type { QueryResult } from "pg";
 import type { userMovieStates } from "@/types/movies/movieTypes";
+import type { OmdbSearchResult } from "@/types/movies/movieTypes";
 
 import { pool } from "../db";
 
@@ -17,6 +18,69 @@ export async function getUserMovies(userId: string) {
     [userId],
   );
   
+
+  return userMovieList.rows;
+}
+
+export async function getFavoriteMovies(userId: string) {
+  const userMovieList: QueryResult<OmdbSearchResult> = await pool.query(
+    `
+      SELECT
+        m.imdb_id AS "imdbID",
+        m.title AS "Title",
+        m.year AS "Year",
+        m.type AS "Type",
+        m.poster_url AS "Poster"
+      FROM user_movies AS u
+      JOIN movies AS m
+        ON u.movie_id = m.imdb_id
+      WHERE u.user_id = $1
+        AND u.is_favorite = TRUE
+    `,
+    [userId],
+  );
+
+  return userMovieList.rows;
+}
+
+export async function getWatchlistedMovies(userId: string) {
+  const userMovieList: QueryResult<OmdbSearchResult> = await pool.query(
+    `
+      SELECT
+        m.imdb_id AS "imdbID",
+        m.title AS "Title",
+        m.year AS "Year",
+        m.type AS "Type",
+        m.poster_url AS "Poster"
+      FROM user_movies AS u
+      JOIN movies AS m
+        ON u.movie_id = m.imdb_id
+      WHERE u.user_id = $1
+        AND u.is_watchlisted = TRUE
+    `,
+    [userId],
+  );
+
+  return userMovieList.rows;
+}
+
+export async function getWatchedMovies(userId: string) {
+  const userMovieList: QueryResult<OmdbSearchResult> = await pool.query(
+    `
+      SELECT
+        m.imdb_id AS "imdbID",
+        m.title AS "Title",
+        m.year AS "Year",
+        m.type AS "Type",
+        m.poster_url AS "Poster"
+      FROM user_movies AS u
+      JOIN movies AS m
+        ON u.movie_id = m.imdb_id
+      WHERE u.user_id = $1
+        AND u.is_watched = TRUE
+    `,
+    [userId],
+  );
 
   return userMovieList.rows;
 }

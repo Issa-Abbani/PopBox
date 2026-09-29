@@ -1,8 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { SearchBar } from "@/components/search/SearchBar";
-import { SortMenu } from "@/components/filters/SortMenu";
-import { FilterMenu } from "@/components/filters/FilterMenu";
-
 export function CollectionHeader({
   title,
   subtitle,
@@ -18,16 +13,6 @@ export function CollectionHeader({
           <h1 className="mt-2 text-2xl font-semibold tracking-[-0.06em] text-foreground sm:text-3xl md:text-4xl">{title}</h1>
         </div>
         <p className="w-fit rounded-full text-sm">{subtitle}</p>
-      </div>
-
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-        <div className="w-full xl:max-w-xl">
-          <SearchBar placeholder="Search in your collection..." />
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <FilterMenu />
-          <SortMenu />
-        </div>
       </div>
     </div>
   );

@@ -1,9 +1,15 @@
+import { Suspense } from "react";
 import { CollectionPage } from "@/components/collections/CollectionPage";
-import { movies } from "@/lib/mock-data";
+import { getWatchedMovies } from "@/lib/movies/getUserMovies";
+import { requireSession } from "@/lib/auth/auth";
+import { OmdbSearchResult } from "@/types/movies/movieTypes";
+import Loader from "@/components/layout/Loader";
 
-const watchedMovies = movies.filter((movie) => movie.watched);
 
-export default function WatchedPage() {
+async function WatchedContent() {
+    const session = await requireSession();
+
+    const watchedMovies: OmdbSearchResult[] = await getWatchedMovies(session.user.id);
   return (
     <CollectionPage
       title="Watched"
@@ -21,3 +27,12 @@ export default function WatchedPage() {
     />
   );
 }
+
+export default function WatchedPage() {
+  return (
+    <Suspense fallback={<Loader/>}>
+      <WatchedContent />
+    </Suspense>
+  );
+}
+
