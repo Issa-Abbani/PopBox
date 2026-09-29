@@ -4,7 +4,7 @@ import { pool } from "@/lib/db";
 
 import type { OmdbSearchResult } from "@/types/movies/movieTypes";
 import userMovieConfig from "@/lib/helpers/userMovieConfig";
-import postMovieFavorite from "@/lib/movies/postMovieFavorite";
+import postMovieWatchlist from "@/lib/movies/postMovieWatchlist";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     await userMovieConfig(movie, session.user.id, client);
 
-    const favoriteState = await postMovieFavorite(
+    const watchlistState = await postMovieWatchlist(
       movie.imdbID,
       session.user.id,
       client,
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "Done",
-        is_favorite: favoriteState,
+        is_watchlisted: watchlistState,
       },
       { status: 200 },
     );

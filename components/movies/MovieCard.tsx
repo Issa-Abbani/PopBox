@@ -4,16 +4,71 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Heart, Plus, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 
 import type { OmdbSearchResult } from "@/types/movies/movieTypes";
+import type { userMovieStates } from "@/types/movies/movieTypes";
 
 export function MovieCard({
   movie,
-  onFavorite,
+  state,
 }: {
   movie: OmdbSearchResult;
-  onFavorite: (movie: OmdbSearchResult) => Promise<void>;
+  state?: userMovieStates;
 }) {
+  const resolvedState = state ?? {
+    movie_id: movie.imdbID,
+    is_favorite: false,
+    is_watched: false,
+    is_watchlisted: false,
+  };
+  const [favorite, setFavorite] = useState<boolean>(resolvedState.is_favorite);
+  const [watchlist, setWatchlist] = useState<boolean>(
+    resolvedState.is_watchlisted,
+  );
+
+  const onFavorite = async (movie: OmdbSearchResult) => {
+    try {
+      const response = await fetch("/api/movies/favorite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          movie,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Couldn't favorite movie");
+      }
+      setFavorite(data.is_favorite);
+    } catch {
+      alert("Couldn't Favorite Movie");
+    }
+  };
+
+  const onWatchlist = async (movie: OmdbSearchResult) => {
+    try {
+      const response = await fetch("/api/movies/watchlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          movie,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Couldn't watchlist movie");
+      }
+      setWatchlist(data.is_watchlisted);
+    } catch {
+      alert("Couldn't Watchlist Movie");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
@@ -28,12 +83,27 @@ export function MovieCard({
         onClick={() => onFavorite(movie)}
       >
         <Heart
-          className={movie ? "h-4 w-4 fill-red-500 text-red-500" : "h-4 w-4"}
+          className={favorite ? "h-4 w-4 fill-red-500 text-red-500" : "h-4 w-4"}
         />
+      </button>
+
+      <button
+        type="button"
+        className="flex z-30 absolute bottom-5 left-2.5 items-center justify-between gap-2 text-[11px] text-muted-foreground sm:text-xs cursor-pointer"
+        onClick={() => onWatchlist(movie)}
+      >
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2 py-1 text-[10px] font-medium text-foreground">
+          {watchlist ? (
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+          ) : (
+            <Plus className="h-3.5 w-3.5" />
+          )}
+          {resolvedState.is_watched ? "Watched" : "Watchlist"}
+        </span>
       </button>
       <Link
         href={`/movies/${movie.imdbID}`}
-        className="group block overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_18px_45px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_26px_68px_rgba(124,58,237,0.14)]"
+        className="group block overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_18px_45px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_26px_68px_rgba(124,58,237,0.14)] pb-10"
       >
         <div className="relative">
           <div className="relative h-72 w-full overflow-hidden">
@@ -63,17 +133,6 @@ export function MovieCard({
                 </h3>
                 <p className="text-sm text-muted-foreground">{movie.Year}</p>
               </div>
-            </div>
-
-            <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground sm:text-xs">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2 py-1 text-[10px] font-medium text-foreground">
-                {movie ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                ) : (
-                  <Plus className="h-3.5 w-3.5" />
-                )}
-                {movie ? "Watched" : "Watchlist"}
-              </span>
             </div>
           </div>
         </div>

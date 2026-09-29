@@ -54,3 +54,10 @@ export interface OmdbMovieDetails {
   Response: "True" | "False";
   Error?: string;
 }
+
+export interface userMovieStates {
+  movie_id: string;
+  is_favorite: boolean;
+  is_watchlisted: boolean;
+  is_watched: boolean;
+}

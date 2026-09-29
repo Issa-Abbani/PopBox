@@ -1,30 +1,37 @@
 "use client";
+
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+
 import { Button } from "../ui/button";
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch?: (query: string) => void;
   query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
-  loading: boolean;
 }
 
 export function SearchBar({
   placeholder = "Search movies, genres, actors...",
-  onSearch,
   query,
-  setQuery,
-  loading,
 }: SearchBarProps) {
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+  const [value, setValue] = useState(query);
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (query.trim() === "") return;
+    const trimmedQuery = value.trim();
 
-    onSearch?.(query.trim());
-  };
+    if (!trimmedQuery) {
+      router.push("/search");
+      return;
+    }
+
+    router.push(
+      `/search?query=${encodeURIComponent(trimmedQuery)}`
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3 md:flex-row md:items-center">
@@ -36,13 +43,16 @@ export function SearchBar({
           <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
 
           <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            disabled={loading}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
             placeholder={placeholder}
             className="min-w-0 flex-1 border-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
           />
-          <Button className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground shadow-[0_12px_30px_rgba(124,58,237,0.28)] cursor-pointer" type="submit">
+
+          <Button
+            className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary text-primary-foreground shadow-[0_12px_30px_rgba(124,58,237,0.28)]"
+            type="submit"
+          >
             <Search className="h-4 w-4" />
             Search
           </Button>
