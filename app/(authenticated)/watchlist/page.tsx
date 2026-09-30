@@ -5,11 +5,12 @@ import { requireSession } from "@/lib/auth/auth";
 import { OmdbSearchResult } from "@/types/movies/movieTypes";
 import Loader from "@/components/layout/Loader";
 
-
 async function WatchlistContent() {
-    const session = await requireSession();
+  const session = await requireSession();
 
-    const watchlistMovies: OmdbSearchResult[] = await getWatchlistedMovies(session.user.id);
+  const watchlistMovies: OmdbSearchResult[] = await getWatchlistedMovies(
+    session.user.id,
+  );
   return (
     <CollectionPage
       title="Watchlist"
@@ -37,7 +38,13 @@ async function WatchlistContent() {
 
 export default function WatchlistPage() {
   return (
-    <Suspense fallback={<Loader/>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loader />
+        </div>
+      }
+    >
       <WatchlistContent />
     </Suspense>
   );

@@ -79,20 +79,20 @@ export function Navbar() {
   const userMenuItems = [
     { label: "Profile", href: "/home", icon: UserCircle2 },
     // { label: "Friends", href: "/home", icon: Users },
-    { label: "Settings", href: "/home", icon: Settings },
+    // { label: "Settings", href: "/home", icon: Settings },
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-accent-foreground/70 backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-2xl">
       <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-2 px-3 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-          <button
+          {/* <button
             type="button"
             className={` h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm lg:hidden ${!session ? "hidden" : "inline-flex"}`}
             aria-label="Open menu"
           >
             <Menu className="h-4 w-4" />
-          </button>
+          </button> */}
 
           <Link
             href={session ? "/home" : "/"}
@@ -102,7 +102,7 @@ export function Navbar() {
               <Film className="h-4 w-4 text-white" />
             </div>
             <div className="min-w-0">
-              <div className="truncate text-base font-semibold tracking-[-0.06em] text-white sm:text-xl">
+              <div className="truncate text-base font-semibold tracking-[-0.06em] text-primary-soft sm:text-xl">
                 PopBox
               </div>
             </div>

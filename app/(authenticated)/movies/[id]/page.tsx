@@ -39,7 +39,13 @@ export default function MovieDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <Suspense fallback={<Loader/>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loader />
+        </div>
+      }
+    >
       <MovieDetailsContent params={params} />
     </Suspense>
   );
@@ -319,39 +325,6 @@ async function MovieDetailsContent({
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                <Button className="w-full justify-center rounded-full bg-primary text-white">
-                  Add note
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="w-full justify-center rounded-full"
-                >
-                  Share review
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-center rounded-full"
-                >
-                  {movie.Website && movie.Website !== "N/A" ? (
-                    <a
-                      href={movie.Website}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      Official site
-                    </a>
-                  ) : (
-                    <span className="inline-flex items-center gap-2">
-                      <Clapperboard className="h-4 w-4" />
-                      Open timeline
-                    </span>
-                  )}
-                </Button>
               </div>
             </div>
           </aside>

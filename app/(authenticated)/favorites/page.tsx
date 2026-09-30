@@ -8,8 +8,9 @@ import Loader from "@/components/layout/Loader";
 async function FavoritesContent() {
   const session = await requireSession();
 
-  const favoriteMovies: OmdbSearchResult[] =
-    await getFavoriteMovies(session.user.id);
+  const favoriteMovies: OmdbSearchResult[] = await getFavoriteMovies(
+    session.user.id,
+  );
 
   return (
     <CollectionPage
@@ -40,7 +41,13 @@ async function FavoritesContent() {
 
 export default function FavoritesPage() {
   return (
-    <Suspense fallback={<Loader/>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loader />
+        </div>
+      }
+    >
       <FavoritesContent />
     </Suspense>
   );
