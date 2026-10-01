@@ -1,5 +1,5 @@
-import { ArrowRight, Clock3 } from "lucide-react";
-import Link from "next/link";
+// import { ArrowRight, Clock3 } from "lucide-react";
+// import Link from "next/link";
 
 import { SearchBar } from "@/components/search/SearchBar";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -7,11 +7,11 @@ import { MovieGrid } from "@/components/movies/MovieGrid";
 import { searchMovies } from "@/lib/movies/searchMovies";
 import { Suspense } from "react";
 
-const recentSearches = [
-  "Dune",
-  "Ex Machina",
-  "Spider-Man: Across the Spider-Verse",
-];
+// const recentSearches = [
+//   "Dune",
+//   "Ex Machina",
+//   "Spider-Man: Across the Spider-Verse",
+// ];
 
 async function SearchResults({ query }: { query: string }) {
   if (!query.trim()) {
@@ -62,7 +62,7 @@ export default async function SearchPageContent({
           </div>
         </div>
 
-        <aside className="space-y-5">
+        {/* <aside className="space-y-5">
           <div className="rounded-[28px] border border-border bg-card p-5">
             <div className="mb-4 flex items-center gap-2 text-foreground">
               <Clock3 className="h-4 w-4 text-primary" />
@@ -85,7 +85,7 @@ export default async function SearchPageContent({
               ))}
             </div>
           </div>
-        </aside>
+        </aside> */}
       </section>
 
       <section className="flex w-[90%] flex-col">
