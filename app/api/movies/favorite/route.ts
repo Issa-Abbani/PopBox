@@ -20,7 +20,6 @@ export async function POST(request: Request) {
 
   const movie: OmdbSearchResult = body.movie;
 
-  console.log(movie);
   const client = await pool.connect();
 
   try {

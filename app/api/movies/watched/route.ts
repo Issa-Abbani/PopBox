@@ -4,7 +4,7 @@ import { pool } from "@/lib/db";
 
 import type { OmdbSearchResult } from "@/types/movies/movieTypes";
 import userMovieConfig from "@/lib/helpers/userMovieConfig";
-import postMovieWatchlist from "@/lib/movies/postMovieWatchlist";
+import postMovieWatched from "@/lib/movies/postMovieWatched";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
 
     await userMovieConfig(movie, session.user.id, client);
 
-    const watchlistState = await postMovieWatchlist(
+    const watchState = await postMovieWatched(
       movie.imdbID,
       session.user.id,
       client,
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: "Done",
-        is_watchlisted: watchlistState,
+        is_watched: watchState,
       },
       { status: 200 },
     );
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     console.error(error);
 
     return NextResponse.json(
-      { error: "Couldn't watchlist movie" },
+      { error: "Couldn't change watch state of movie" },
       { status: 500 },
     );
   } finally {

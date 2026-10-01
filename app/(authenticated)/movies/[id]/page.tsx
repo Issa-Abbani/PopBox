@@ -21,7 +21,7 @@ import { getMovieDetails } from "@/lib/movies/getMovieDetails";
 import type { OmdbMovieDetails } from "@/types/movies/movieTypes";
 import { Suspense } from "react";
 import Loader from "@/components/layout/Loader";
-import type { userMovieStates } from "@/types/movies/movieTypes";
+import type { OmdbSearchResult } from "@/types/movies/movieTypes";
 import { searchUserMovie } from "@/lib/movies/getUserMovies";
 import { requireSession } from "@/lib/auth/auth";
 
@@ -72,6 +72,14 @@ async function MovieDetailsContent({
     is_favorite: false,
     is_watchlisted: false,
     is_watched: false,
+  };
+
+  const OmdbFormatMovie: OmdbSearchResult = {
+    Title: movie.Title,
+    Year: movie.Year,
+    imdbID: movie.imdbID,
+    Type: movie.Type,
+    Poster: movie.Poster,
   };
 
   const poster = getPosterUrl(movie.Poster);
@@ -163,7 +171,7 @@ async function MovieDetailsContent({
               </p>
 
               <div className="mt-6">
-                <MovieActions userMovieDetails={userMovieDetails} />
+                <MovieActions userMovieDetails={userMovieDetails} OmdbSearchDetails={OmdbFormatMovie} />
               </div>
             </div>
           </div>
@@ -208,15 +216,21 @@ async function MovieDetailsContent({
                 <div className="mt-3 space-y-2 text-sm text-foreground">
                   <div className="flex items-center justify-between">
                     <span>Favorite</span>
-                    <span className="text-muted-foreground">{userMovieDetails.is_favorite ? "Yes" : "No"}</span>
+                    <span className="text-muted-foreground">
+                      {userMovieDetails.is_favorite ? "Yes" : "No"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Watchlist</span>
-                    <span className="text-muted-foreground">{userMovieDetails.is_watchlisted ? "Saved" : "Not Saved"}</span>
+                    <span className="text-muted-foreground">
+                      {userMovieDetails.is_watchlisted ? "Saved" : "Not Saved"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Watched</span>
-                    <span className="text-muted-foreground">{userMovieDetails.is_watched ? "Yes" : "Not Yet"}</span>
+                    <span className="text-muted-foreground">
+                      {userMovieDetails.is_watched ? "Yes" : "Not Yet"}
+                    </span>
                   </div>
                 </div>
               </div>
