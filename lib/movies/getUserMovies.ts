@@ -22,6 +22,21 @@ export async function getUserMovies(userId: string) {
   return userMovieList.rows;
 }
 
+export async function searchUserMovie(userId: string, movieId: string) {
+  const userMovieDetails: QueryResult<userMovieStates> = await pool.query(
+    `SELECT
+      movie_id,
+      is_favorite,
+      is_watchlisted,
+      is_watched
+     FROM user_movies
+     WHERE user_id = $1 AND movie_id = $2`,
+    [userId, movieId],
+  );
+
+  return userMovieDetails.rows[0] ?? null;
+}
+
 export async function getFavoriteMovies(userId: string) {
   const userMovieList: QueryResult<OmdbSearchResult> = await pool.query(
     `

@@ -2,8 +2,6 @@ import {
   Award,
   Building2,
   CalendarClock,
-  Clapperboard,
-  ExternalLink,
   Film,
   Globe2,
   Languages,
@@ -18,12 +16,14 @@ import { MovieActions } from "@/components/movies/MovieActions";
 import { MovieCast } from "@/components/movies/MovieCast";
 import { MovieRating } from "@/components/movies/MovieRating";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { MediaImage } from "@/components/ui/media-image";
 import { getMovieDetails } from "@/lib/movies/getMovieDetails";
 import type { OmdbMovieDetails } from "@/types/movies/movieTypes";
 import { Suspense } from "react";
 import Loader from "@/components/layout/Loader";
+import type { userMovieStates } from "@/types/movies/movieTypes";
+import { searchUserMovie } from "@/lib/movies/getUserMovies";
+import { requireSession } from "@/lib/auth/auth";
 
 function formatOmdbValue(value?: string) {
   return value && value.trim() !== "N/A" ? value : "Not available";
@@ -57,11 +57,22 @@ async function MovieDetailsContent({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const session = await requireSession();
   const movie: OmdbMovieDetails = await getMovieDetails(id);
 
   if (!movie || movie.Response === "False") {
     notFound();
   }
+
+  const userMovieDetails = (await searchUserMovie(
+    session.user.id,
+    movie.imdbID,
+  )) ?? {
+    movie_id: movie.imdbID,
+    is_favorite: false,
+    is_watchlisted: false,
+    is_watched: false,
+  };
 
   const poster = getPosterUrl(movie.Poster);
   const genres =
@@ -152,7 +163,7 @@ async function MovieDetailsContent({
               </p>
 
               <div className="mt-6">
-                <MovieActions />
+                <MovieActions userMovieDetails={userMovieDetails} />
               </div>
             </div>
           </div>
@@ -197,15 +208,15 @@ async function MovieDetailsContent({
                 <div className="mt-3 space-y-2 text-sm text-foreground">
                   <div className="flex items-center justify-between">
                     <span>Favorite</span>
-                    <span className="text-muted-foreground">No</span>
+                    <span className="text-muted-foreground">{userMovieDetails.is_favorite ? "Yes" : "No"}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Watchlist</span>
-                    <span className="text-muted-foreground">Saved</span>
+                    <span className="text-muted-foreground">{userMovieDetails.is_watchlisted ? "Saved" : "Not Saved"}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Watched</span>
-                    <span className="text-muted-foreground">Not yet</span>
+                    <span className="text-muted-foreground">{userMovieDetails.is_watched ? "Yes" : "Not Yet"}</span>
                   </div>
                 </div>
               </div>
@@ -240,7 +251,9 @@ async function MovieDetailsContent({
               </div>
               <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-muted p-3">
                 <span className="shrink-0 text-muted-foreground">Runtime</span>
-                <span className="min-w-0 truncate text-right font-medium text-foreground">{runtime}</span>
+                <span className="min-w-0 truncate text-right font-medium text-foreground">
+                  {runtime}
+                </span>
               </div>
               <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-muted p-3">
                 <span className="shrink-0 text-muted-foreground">Imdb</span>
