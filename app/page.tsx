@@ -74,7 +74,7 @@ const moods = [
 const stats = [
   { value: "12k+", label: "movie picks" },
   { value: "4.9/5", label: "curation score" },
-  { value: "48h", label: "average discovery time" },
+  { value: "100%", label: "Free Usage" },
   { value: "100%", label: "cinema-first design" },
 ];
 
@@ -250,7 +250,7 @@ export default function RootPage() {
           </div>
         </motion.section>
 
-        <motion.section
+        {/* <motion.section
           {...reveal}
           className="rounded-[1.75rem] border border-border bg-linear-to-br from-primary/10 via-card to-accent/8 p-5 sm:p-6 lg:p-8"
         >
@@ -293,7 +293,7 @@ export default function RootPage() {
               ))}
             </div>
           </div>
-        </motion.section>
+        </motion.section> */}
 
         <motion.section
           {...reveal}

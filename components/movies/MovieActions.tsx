@@ -1,8 +1,10 @@
 "use client";
-import { BookHeart, Check, Heart, Plus } from "lucide-react";
+import { BookHeart, Check, Heart, Plus, Star, X } from "lucide-react";
 import type { userMovieStates } from "@/types/movies/movieTypes";
 import type { OmdbSearchResult } from "@/types/movies/movieTypes";
 import { Button } from "@/components/ui/button";
+import { MovieDialog } from "@/components/movies/MovieDialog";
+import { MovieNoteModal } from "@/components/movies/MovieNoteModal";
 import { useState } from "react";
 
 type MovieActionsProps = {
@@ -18,6 +20,9 @@ export function MovieActions({
   const [favorite, setFavorite] = useState<boolean>(is_favorite);
   const [watchlist, setWatchlist] = useState<boolean>(is_watchlisted);
   const [watched, setWatched] = useState<boolean>(is_watched);
+  const [activeDialog, setActiveDialog] = useState<"note" | "rating" | null>(null);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [savedRating, setSavedRating] = useState<number | null>(null);
 
   const onFavorite = async (movie: OmdbSearchResult) => {
     try {
@@ -125,6 +130,7 @@ export function MovieActions({
       <Button
         variant="outline"
         className="flex-1 text-white hover:text-accent cursor-pointer gap-2 rounded-full border border-border sm:flex-none"
+        onClick={() => setActiveDialog("note")}
       >
         <BookHeart className="h-4 w-4 " />
         Add note
@@ -132,10 +138,109 @@ export function MovieActions({
       <Button
         variant="ghost"
         className="flex-1 cursor-pointer text-white hover:text-accent gap-2 rounded-full border border-border sm:flex-none"
+        onClick={() => setActiveDialog("rating")}
       >
-        <BookHeart className="h-4 w-4" />
-        Add Rating
+        <Star className="h-4 w-4" />
+        {savedRating === null ? "Add Rating" : `Rated ${savedRating}/10`}
       </Button>
+
+      <MovieNoteModal
+        open={activeDialog === "note"}
+        onClose={() => setActiveDialog(null)}
+        movie={OmdbSearchDetails}
+      />
+
+      <MovieDialog
+        open={activeDialog === "rating"}
+        onClose={() => setActiveDialog(null)}
+        labelledBy="movie-rating-title"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4 sm:px-6">
+          <div>
+            <div className="mb-2 flex items-center gap-2 text-sm text-accent">
+              <Star className="h-4 w-4" />
+              <span>Your rating</span>
+            </div>
+            <h2 id="movie-rating-title" className="text-xl font-semibold">
+              Rate this movie
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {OmdbSearchDetails.Title} ({OmdbSearchDetails.Year})
+            </p>
+          </div>
+          <button
+            type="button"
+            aria-label="Close rating dialog"
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            onClick={() => setActiveDialog(null)}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="space-y-6 px-5 py-6 sm:px-6">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 text-accent">
+              <Star className="h-6 w-6 fill-current" />
+              <span className="text-4xl font-semibold tabular-nums">
+                {selectedRating ?? "–"}
+              </span>
+              <span className="mt-3 text-sm text-muted-foreground">/ 10</span>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {selectedRating === null ? "Choose a score" : "Your score"}
+            </p>
+          </div>
+
+          <div
+            className="grid grid-cols-6 gap-2 sm:grid-cols-11"
+            role="group"
+            aria-label="Choose a rating from 0 to 10"
+          >
+            {Array.from({ length: 11 }, (_, rating) => (
+              <button
+                key={rating}
+                type="button"
+                aria-label={`${rating} out of 10`}
+                aria-pressed={selectedRating === rating}
+                onClick={() => setSelectedRating(rating)}
+                className={`aspect-square min-w-0 rounded-lg text-sm font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                  selectedRating === rating
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-muted text-foreground hover:bg-primary/20"
+                }`}
+              >
+                {rating}
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Not for me</span>
+            <span>A favorite</span>
+          </div>
+
+          <div className="flex justify-end gap-2 border-t border-border pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setActiveDialog(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              disabled={selectedRating === null}
+              onClick={() => {
+                if (selectedRating === null) return;
+                setSavedRating(selectedRating);
+                setActiveDialog(null);
+              }}
+            >
+              Save rating
+            </Button>
+          </div>
+        </div>
+      </MovieDialog>
     </div>
   );
 }
