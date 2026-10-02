@@ -1,17 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { BookHeart, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { MovieDialog } from "@/components/movies/MovieDialog";
 import type { OmdbSearchResult } from "@/types/movies/movieTypes";
-
-type MovieNote = {
-  id: string;
-  text: string;
-  createdAt: string;
-};
+import { getMovieNotesClient } from "@/lib/reviews/getMovieNotes";
 
 type MovieNoteModalProps = {
   open: boolean;
@@ -19,50 +14,98 @@ type MovieNoteModalProps = {
   movie: OmdbSearchResult;
 };
 
+export async function handlePostMovieNotes(
+  movie: OmdbSearchResult,
+  notes: string,
+) {
+  const response = await fetch("/api/reviews/notes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      movie,
+      notes,
+    }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+
+    throw new Error(data.error || "Couldn't save movie notes");
+  }
+
+  return response.json();
+}
+
 export function MovieNoteModal({ open, onClose, movie }: MovieNoteModalProps) {
   const [noteDraft, setNoteDraft] = useState("");
-  const [notes, setNotes] = useState<MovieNote[]>([]);
   const [noteAdded, setNoteAdded] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const addNote = (event: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (!open) return;
+
+    let cancelled = false;
+
+    async function loadNotes() {
+      try {
+        const notes = await getMovieNotesClient(movie.imdbID);
+
+        if (!cancelled) {
+          setNoteDraft(notes);
+        }
+      } catch (error) {
+        console.error("Failed to load movie notes:", error);
+      }
+    }
+
+    loadNotes();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, movie.imdbID]);
+
+  const addNote = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const text = noteDraft.trim();
-    if (!text) return;
 
-    setNotes((currentNotes) => [
-      {
-        id: globalThis.crypto.randomUUID(),
-        text,
-        createdAt: new Intl.DateTimeFormat(undefined, {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }).format(new Date()),
-      },
-      ...currentNotes,
-    ]);
-    setNoteDraft("");
-    setNoteAdded(true);
+    const text = noteDraft.trim();
+    if (!text || saving) return;
+
+    try {
+      setSaving(true);
+
+      await handlePostMovieNotes(movie, text);
+
+      setNoteDraft(text);
+      setNoteAdded(true);
+    } catch (error) {
+      console.error("Failed to save note:", error);
+      setNoteAdded(false);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <MovieDialog
-      open={open}
-      onClose={onClose}
-      labelledBy="movie-notes-title"
-    >
+    <MovieDialog open={open} onClose={onClose} labelledBy="movie-notes-title">
       <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4 sm:px-6">
         <div>
           <div className="mb-2 flex items-center gap-2 text-sm text-accent">
             <BookHeart className="h-4 w-4" />
             <span>Your notes</span>
           </div>
+
           <h2 id="movie-notes-title" className="text-xl font-semibold">
             Add a note
           </h2>
+
           <p className="mt-1 text-sm text-muted-foreground">
             {movie.Title} ({movie.Year})
           </p>
         </div>
+
         <button
           type="button"
           aria-label="Close notes dialog"
@@ -77,6 +120,7 @@ export function MovieNoteModal({ open, onClose, movie }: MovieNoteModalProps) {
         <label htmlFor="movie-note" className="block text-sm font-medium">
           Note
         </label>
+
         <textarea
           id="movie-note"
           autoFocus
@@ -89,38 +133,20 @@ export function MovieNoteModal({ open, onClose, movie }: MovieNoteModalProps) {
           placeholder="What stood out to you?"
           className="w-full resize-y rounded-xl border border-border bg-muted px-4 py-3 text-sm leading-6 outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
-        <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-          <span aria-live="polite">{noteAdded ? "Note added." : " "}</span>
-          <span>{noteDraft.length.toLocaleString()} characters</span>
-        </div>
 
-        {notes.length > 0 && (
-          <section
-            className="space-y-3 border-t border-border pt-4"
-            aria-label="Added notes"
-          >
-            <h3 className="text-sm font-medium">Added notes ({notes.length})</h3>
-            <ul className="max-h-48 space-y-2 overflow-y-auto">
-              {notes.map((note) => (
-                <li key={note.id} className="rounded-xl bg-muted px-4 py-3">
-                  <p className="whitespace-pre-wrap wrap-break-word text-sm leading-6">
-                    {note.text}
-                  </p>
-                  <time className="mt-2 block text-xs text-muted-foreground">
-                    {note.createdAt}
-                  </time>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+          <span aria-live="polite">{noteAdded ? "Note saved." : " "}</span>
+
+          <span>{noteDraft.length.toLocaleString()} / 2000 characters</span>
+        </div>
 
         <div className="flex justify-end gap-2 border-t border-border pt-4">
           <Button type="button" variant="outline" onClick={onClose}>
             Close
           </Button>
-          <Button type="submit" disabled={!noteDraft.trim()}>
-            Add note
+
+          <Button type="submit" disabled={!noteDraft.trim() || saving}>
+            {saving ? "Saving..." : "Save note"}
           </Button>
         </div>
       </form>

@@ -116,7 +116,7 @@ async function MovieDetailsContent({
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,9,11,0.9),rgba(9,9,11,0.58),rgba(9,9,11,0.12))]" />
 
           <div className="relative grid min-w-0 gap-8 p-4 sm:p-5 md:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-            <div className="relative mx-auto w-full max-w-65 overflow-hidden rounded-3xl border border-white/20 bg-black/25 p-2.5 backdrop-blur-md sm:max-w-[320px] sm:rounded-[28px] sm:p-3">
+            <div className="relative mx-auto h-fit w-full max-w-65 overflow-hidden rounded-3xl border border-white/20 bg-black/25 p-2.5 backdrop-blur-md sm:max-w-[320px] sm:rounded-[28px] sm:p-3">
               <div className="relative h-75 overflow-hidden rounded-[20px] sm:h-105 sm:rounded-[22px]">
                 <MediaImage
                   src={poster}
@@ -290,7 +290,7 @@ async function MovieDetailsContent({
                 </span>
               </div>
               <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-muted p-3">
-                <span className="shrink-0 text-muted-foreground">WWriter</span>
+                <span className="shrink-0 text-muted-foreground">Writer</span>
                 <span className="min-w-0 truncate text-right font-medium text-foreground">
                   {writerValue}
                 </span>
