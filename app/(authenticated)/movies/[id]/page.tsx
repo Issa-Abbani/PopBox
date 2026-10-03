@@ -72,6 +72,8 @@ async function MovieDetailsContent({
     is_favorite: false,
     is_watchlisted: false,
     is_watched: false,
+    notes: null,
+    personal_rating: null
   };
 
   const OmdbFormatMovie: OmdbSearchResult = {
@@ -240,7 +242,7 @@ async function MovieDetailsContent({
                   Personal notes
                 </div>
                 <p className="mt-3 text-base leading-7 text-foreground">
-                  No notes yet — jot down what stood out during your watch.
+                  {userMovieDetails.notes === null ? "No notes yet — jot down what stood out during your watch." : userMovieDetails.notes}
                 </p>
               </div>
             </div>

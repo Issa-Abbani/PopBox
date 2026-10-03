@@ -60,4 +60,6 @@ export interface userMovieStates {
   is_favorite: boolean;
   is_watchlisted: boolean;
   is_watched: boolean;
+  notes?: string | null;
+  personal_rating?: number | null;
 }

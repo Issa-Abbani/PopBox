@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MovieNoteModal } from "@/components/movies/MovieNoteModal";
 import { MovieRatingModal } from "./MovieRatingModal";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type MovieActionsProps = {
   userMovieDetails: userMovieStates;
@@ -23,6 +24,7 @@ export function MovieActions({
   const [activeDialog, setActiveDialog] = useState<"note" | "rating" | null>(
     null,
   );
+  const router = useRouter();
 
   const onFavorite = async (movie: OmdbSearchResult) => {
     try {
@@ -40,6 +42,7 @@ export function MovieActions({
         throw new Error(data.error ?? "Couldn't favorite movie");
       }
       setFavorite(data.is_favorite);
+      router.refresh();
     } catch {
       alert("Couldn't Favorite Movie");
     }
@@ -61,6 +64,7 @@ export function MovieActions({
         throw new Error(data.error ?? "Couldn't watchlist movie");
       }
       setWatchlist(data.is_watchlisted);
+      router.refresh();
     } catch {
       alert("Couldn't Watchlist Movie");
     }
@@ -82,6 +86,7 @@ export function MovieActions({
         throw new Error(data.error ?? "Couldn't watchlist movie");
       }
       setWatched(data.is_watched);
+      router.refresh();
     } catch {
       alert("Couldn't Change Movie Watch State");
     }
@@ -146,13 +151,19 @@ export function MovieActions({
 
       <MovieNoteModal
         open={activeDialog === "note"}
-        onClose={() => setActiveDialog(null)}
+        onClose={() => {
+          setActiveDialog(null);
+          router.refresh();
+        }}
         movie={OmdbSearchDetails}
       />
 
       <MovieRatingModal
         open={activeDialog === "rating"}
-        onClose={() => setActiveDialog(null)}
+        onClose={() => {
+          setActiveDialog(null);
+          router.refresh();
+        }}
         movie={OmdbSearchDetails}
       />
     </div>

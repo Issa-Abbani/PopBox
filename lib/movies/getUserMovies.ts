@@ -28,7 +28,9 @@ export async function searchUserMovie(userId: string, movieId: string) {
       movie_id,
       is_favorite,
       is_watchlisted,
-      is_watched
+      is_watched,
+      notes,
+      personal_rating
      FROM user_movies
      WHERE user_id = $1 AND movie_id = $2`,
     [userId, movieId],
