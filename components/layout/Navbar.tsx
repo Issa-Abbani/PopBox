@@ -6,9 +6,7 @@ import {
   ChevronDown,
   Film,
   LogOut,
-  Menu,
-  Settings,
-  UserCircle2,
+  // UserCircle2,
   // Users,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -76,11 +74,11 @@ export function Navbar() {
     };
   }, [isUserMenuOpen]);
 
-  const userMenuItems = [
-    { label: "Profile", href: "/home", icon: UserCircle2 },
-    // { label: "Friends", href: "/home", icon: Users },
-    // { label: "Settings", href: "/home", icon: Settings },
-  ];
+  // const userMenuItems = [
+  //   { label: "Profile", href: "/home", icon: UserCircle2 },
+  //   // { label: "Friends", href: "/home", icon: Users },
+  //   // { label: "Settings", href: "/home", icon: Settings },
+  // ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-2xl">
@@ -185,7 +183,7 @@ export function Navbar() {
                   </div>
 
                   <div className="mt-1 space-y-1">
-                    {userMenuItems.map(({ label, href, icon: Icon }) => (
+                    {/* {userMenuItems.map(({ label, href, icon: Icon }) => (
                       <Link
                         key={label}
                         href={href}
@@ -195,9 +193,9 @@ export function Navbar() {
                         <Icon className="h-4 w-4 text-muted-foreground" />
                         <span>{label}</span>
                       </Link>
-                    ))}
+                    ))} */}
 
-                    <div className="my-1 h-px bg-border" />
+                    {/* <div className="my-1 h-px bg-border" /> */}
 
                     <button
                       type="button"
