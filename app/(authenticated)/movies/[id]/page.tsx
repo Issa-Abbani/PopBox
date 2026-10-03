@@ -206,7 +206,7 @@ async function MovieDetailsContent({
                 <div className="mt-3 flex items-center gap-2 text-2xl font-semibold text-foreground">
                   <Star className="h-5 w-5 fill-accent text-accent" />
                   <span className="text-base text-muted-foreground">
-                    Not set yet
+                    {userMovieDetails.personal_rating === null ? "Not set yet" : userMovieDetails.personal_rating?.toString()}
                   </span>
                 </div>
               </div>

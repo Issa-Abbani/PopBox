@@ -80,6 +80,7 @@ export function MovieNoteModal({ open, onClose, movie }: MovieNoteModalProps) {
 
       setNoteDraft(text);
       setNoteAdded(true);
+      onClose();
     } catch (error) {
       console.error("Failed to save note:", error);
       setNoteAdded(false);
